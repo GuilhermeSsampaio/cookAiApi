@@ -18,5 +18,3 @@ def extract_scrap_recipe(url: str):
     scrap_result = scrap_recipe(url)
     return scrap_result
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
