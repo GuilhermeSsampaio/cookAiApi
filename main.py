@@ -13,6 +13,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the CookAi API"}
+
 @app.post("/scrap")
 def extract_scrap_recipe(url: str):
     scrap_result = scrap_recipe(url)
