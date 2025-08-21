@@ -4,6 +4,10 @@ from services.scrap import scrap_recipe
  
 app = FastAPI()
 
+import os
+
+port = int(os.environ.get("PORT", 8000))
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Adjust this to restrict origins in production
