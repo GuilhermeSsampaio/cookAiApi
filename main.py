@@ -31,4 +31,4 @@ def extract_scrap_recipe_post(url: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
