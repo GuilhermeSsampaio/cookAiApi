@@ -1,3 +1,4 @@
+import time
 from dotenv import load_dotenv
 from docling.document_converter import DocumentConverter
 from google import genai
@@ -14,8 +15,14 @@ def scrap_recipe(url):
     """
     Scrape a recipe from the given URL and return its content.
     """
+    start_time = time.time()
+    print(f"Starting to scrape the recipe from {url}...")
     try:
         result = converter.convert(url)
+        conversion_time = time.time() - start_time
+        print(f"Tempo de conversão: {conversion_time:.2f} segundos")
+
+
         docling_txt = result.document.export_to_markdown()
         
         print("Receita extraída com sucesso.")
@@ -26,10 +33,17 @@ def scrap_recipe(url):
         Caso não tenha o tempo de forno indique o recomendado.
         Traduza para o português.
         """
+        model_start_time = time.time()
+
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt,
         )
+        model_time = time.time() - model_start_time
+        print(f"Tempo de processamento do modelo: {model_time:.2f} segundos")
+        
+        total_time = time.time() - start_time
+        print(f"Tempo total de execução: {total_time:.2f} segundos")
         return response.text
     except Exception as error:
         return {"error": f"Failed to scrape recipe from {url}: {error}"} 
