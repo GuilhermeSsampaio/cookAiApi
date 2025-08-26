@@ -1,7 +1,10 @@
+from dotenv import load_dotenv  # Adicione esta importação
+
 from sqlmodel import SQLModel, create_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 import os
 from urllib.parse import quote_plus
+load_dotenv()
 
 # Credenciais do banco
 DB_USER = os.environ.get("DB_USER", "postgres")
@@ -10,6 +13,7 @@ DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_PORT = os.environ.get("DB_PORT", "5432")
 DB_NAME = os.environ.get("DB_NAME", "cookai")
 
+print(f"Conectando ao banco de dados em {DB_HOST}:{DB_PORT}/{DB_NAME} como usuário {DB_USER}")
 # Construindo a URL de conexão de forma segura
 DATABASE_URL = f"postgresql://{quote_plus(DB_USER)}:{quote_plus(DB_PASSWORD)}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
