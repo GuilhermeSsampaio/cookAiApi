@@ -1,15 +1,14 @@
-from fastapi import FastAPI, Query,Body, Depends
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from services.scrap import scrap_recipe
 import os
 from database.db import init_db, engine
-from models.recipe import Recipe
-from sqlmodel import Session, select
+from sqlmodel import Session
+from routes.recipes import router as recipes_router
+import uvicorn
 
 app = FastAPI()
 
 port = int(os.environ.get("PORT", 8000))
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,34 +30,8 @@ def on_startup():
 def read_root():
     return {"message": "Welcome to the CookAi API"}
 
-@app.get("/scrap")
-def extract_scrap_recipe_get(url: str = Query(...)):
-    scrap_result = scrap_recipe(url)
-    return scrap_result
-
-@app.post("/scrap")
-def extract_scrap_recipe_post(url: str):
-    scrap_result = scrap_recipe(url)
-    return scrap_result
-
-@app.post("/save_recipe")
-def save_recipe(recipe: dict = Body(...), session: Session = Depends(get_session)):
-    try:
-        new_recipe = Recipe(content=recipe["recipe"])
-        session.add(new_recipe)
-        session.commit()
-        session.refresh(new_recipe)
-        return {"status": "Recipe saved successfully", "recipe_id": new_recipe.id}
-    except Exception as e:
-        session.rollback()
-        return {"status": "error", "message": str(e)}
-    
-    
-@app.get("/recipes")
-def get_recipes(session: Session = Depends(get_session)):
-    recipes = session.exec(select(Recipe)).all()
-    return recipes
+# Inclui as rotas de receitas
+app.include_router(recipes_router, dependencies=[Depends(get_session)])
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    uvicorn.run(app, host="0.0.0.0", port=8000)
