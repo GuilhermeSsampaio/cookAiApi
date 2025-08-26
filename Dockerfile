@@ -20,7 +20,6 @@ COPY ./routes ./routes
 COPY ./services ./services
 COPY ./utils ./utils
 COPY main.py .
-COPY .env .
 
 # Ajustar permissões
 RUN chown -R appuser:appuser /app
