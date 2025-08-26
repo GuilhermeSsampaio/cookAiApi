@@ -30,6 +30,10 @@ def on_startup():
 def read_root():
     return {"message": "Welcome to the CookAi API"}
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
 # Inclui as rotas de receitas
 app.include_router(recipes_router, dependencies=[Depends(get_session)])
 
