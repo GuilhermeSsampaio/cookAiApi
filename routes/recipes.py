@@ -14,6 +14,7 @@ def extract_scrap_recipe_post(url: str):
     return scrap_result
 
 
+
 # @router.post("/edit_recipe")
 # def edit_recipe_post(
 #     recipe: str = Body(..., embed=True, example="Ingredientes: 2 ovos, 1 xícara de farinha. Modo de preparo: Misture tudo e asse."),
