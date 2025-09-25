@@ -1,4 +1,3 @@
-from nt import environ
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
 from sqlmodel import SQLModel, create_engine, Session
