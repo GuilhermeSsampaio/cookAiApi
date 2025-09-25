@@ -26,17 +26,19 @@ engine = create_engine(
     connect_args={"client_encoding": "utf8"}
 )
 
-if os.getenv("ENV") == "test":
-    print("\n\n ambiente: ",os.getenv("ENV"), "\n\n")
-    print("Modo de teste ativado: o banco de dados será reiniciado a cada inicialização.")
-     # Se estiver em modo de teste, reinicia o banco de dados
-     # Cuidado: isso apagará todos os dados existentes!
-    def init_db():
-        SQLModel.metadata.drop_all(engine)  # Exclui todas as tabelas
-        SQLModel.metadata.create_all(engine)  # Recria todas as tabelas
-else:
-    def init_db():
-        SQLModel.metadata.create_all(engine)  # Cria as tabelas se não existirem
+# if os.getenv("ENV") == "test":
+#     print("\n\n ambiente: ",os.getenv("ENV"), "\n\n")
+#     print("Modo de teste ativado: o banco de dados será reiniciado a cada inicialização.")
+#      # Se estiver em modo de teste, reinicia o banco de dados
+#      # Cuidado: isso apagará todos os dados existentes!
+#     def init_db():
+#         SQLModel.metadata.drop_all(engine)  # Exclui todas as tabelas
+#         SQLModel.metadata.create_all(engine)  # Recria todas as tabelas
+# else:
+#     def init_db():
+#         SQLModel.metadata.create_all(engine)  # Cria as tabelas se não existirem
+def init_db():
+    SQLModel.metadata.create_all(engine)  # Cria as tabelas se não existirem
     
 def get_session():
     with Session(engine) as session:
