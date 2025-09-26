@@ -5,14 +5,36 @@ from sqlmodel import Session, select
 from models.recipe import Recipe
 from services.scrap import scrap_recipe
 from database.db import get_session
+from google import genai
+import os
+from pydantic import BaseModel
+
 
 router = APIRouter(prefix="/recipes")
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 @router.post("/scrap")
 def extract_scrap_recipe_post(url: str):
     scrap_result = scrap_recipe(url)
     return scrap_result
 
+class SearchRequest(BaseModel):
+    query: str
+
+@router.post("/search")
+def search_recipes(request: SearchRequest):
+    query = request.query
+    # Use IA para interpretar a entrada do usuário
+    prompt = f"Encontre receitas com base na seguinte especificação: {query}"
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+    )
+    
+    print(response.text)
+    
+    # Retorne os resultados gerados pela IA
+    return {"recipes": response.text}
 
 
 # @router.post("/edit_recipe")

@@ -20,9 +20,9 @@ def scrap_recipe(url):
     # timer inicializado para medir o tempo de execução
     parsed_url = urlparse(url)
     font_of_url = parsed_url.netloc
-    print(font_of_url)
+    # print(font_of_url)
     start_time = time.time()
-    print(f"Starting to scrape the recipe from {url}...")
+    # print(f"Starting to scrape the recipe from {url}...")
     scraper = cloudscraper.create_scraper()
     try:
         # Faz a requisição HTTP
@@ -32,19 +32,19 @@ def scrap_recipe(url):
         # response = requests.get(url, headers=headers, timeout=10)
         response = scraper.get(url, headers=headers, timeout=10)
         print(f"HTTP request completed with status code {response.status_code}.")
-        print(f"Response content: {response.text[:500]}...")  # Print first 500 characters of the response
+        # print(f"Response content: {response.text[:500]}...")  # Print first 500 characters of the response
         response.raise_for_status() # Raise an error for bad status codes
         
         # Parse HTML
         soup = BeautifulSoup(response.text, 'html.parser')
-        print("soup: ", soup.prettify()[:500])  # Print first 500 characters of the prettified soup
+        # print("soup: ", soup.prettify()[:500])  # Print first 500 characters of the prettified soup
         # Remove tags de script e style
         for script in soup(["script", "style"]):
             script.decompose()
             
         # Extrai o texto
         text = soup.get_text(separator='\n', strip=True)
-        print(f"extracted text (first 500 chars): {text[:500]}...")
+        # print(f"extracted text (first 500 chars): {text[:500]}...")
         conversion_time = time.time() - start_time
         print(f"Tempo de conversão: {conversion_time:.2f} segundos")
         
@@ -79,6 +79,6 @@ def scrap_recipe(url):
         return {"error": f"Failed to scrape recipe from {url}: {error}"}
     
     
-url_teste = "https://www.tudogostoso.com.br/receita/23-bolo-de-cenoura.html"    
-# url_teste = "https://www.receitasnestle.com.br/receitas/bolo-de-limao-de-liquidificador"    
-scrap_recipe(url_teste)
+# url_teste = "https://www.tudogostoso.com.br/receita/23-bolo-de-cenoura.html"    
+# # url_teste = "https://www.receitasnestle.com.br/receitas/bolo-de-limao-de-liquidificador"    
+# scrap_recipe(url_teste)

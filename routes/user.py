@@ -19,6 +19,14 @@ def create_user(user: User = Body(...), session: Session = Depends(get_session))
         session.rollback()
         return {"status": "error", "message": str(e)}
     
+@router.post("/login_user")
+def login_user(email: str = Body(...), password_hash: str = Body(...), session: Session = Depends(get_session)):
+    user = session.exec(select(User).where(User.email == email, User.password_hash == password_hash)).first()
+    if not user:
+        return {"status": "error", "message": "Invalid email or password"}
+    return {"status": "Login successful", "user_id": user.id, "username": user.username, "is_premium": user.is_premium}
+               
+    
 @router.post("/save_recipe/{user_id}")
 def save_recipe(user_id: int, recipe: dict = Body(...), session: Session = Depends(get_session)):
     try:
