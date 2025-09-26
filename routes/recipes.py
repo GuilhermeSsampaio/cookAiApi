@@ -18,6 +18,24 @@ def extract_scrap_recipe_post(url: str):
     scrap_result = scrap_recipe(url)
     return scrap_result
 
+# class SearchRequest(BaseModel):
+#     query: str
+
+# @router.post("/search")
+# def search_recipes(request: SearchRequest):
+#     query = request.query
+#     # Use IA para interpretar a entrada do usuário
+#     prompt = f"Encontre receitas com base na seguinte especificação: {query}"
+#     response = client.models.generate_content(
+#         model="gemini-2.5-flash",
+#         contents=prompt,
+#     )
+    
+#     print(response.text)
+    
+#     # Retorne os resultados gerados pela IA
+#     return {"recipes": response.text}
+
 class SearchRequest(BaseModel):
     query: str
 
@@ -25,17 +43,29 @@ class SearchRequest(BaseModel):
 def search_recipes(request: SearchRequest):
     query = request.query
     # Use IA para interpretar a entrada do usuário
-    prompt = f"Encontre receitas com base na seguinte especificação: {query}"
+    prompt = f"""
+    Encontre receitas com base na seguinte especificação: {query}.
+    Retorne as receitas no seguinte formato JSON puro:
+    [
+        {{
+            "title": "Título da receita",
+            "description": "Descrição ou instruções da receita"
+        }},
+        ...
+    ]
+    """
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt,
     )
     
-    print(response.text)
-    
-    # Retorne os resultados gerados pela IA
-    return {"recipes": response.text}
-
+    try:
+        # Tenta interpretar a resposta como JSON
+        recipes = response.text.strip()
+        return {"recipes": recipes}
+    except Exception as e:
+        print("Erro ao interpretar a resposta:", e)
+        return {"error": "Não foi possível processar a resposta da IA."}
 
 # @router.post("/edit_recipe")
 # def edit_recipe_post(
